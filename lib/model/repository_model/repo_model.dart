@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class RepoModel {
   final int id;
   final String name;
@@ -13,6 +14,8 @@ class RepoModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final Owner owner;
+  final String? homepage;
+  final int? size;
 
   RepoModel({
     required this.id,
@@ -29,6 +32,8 @@ class RepoModel {
     required this.createdAt,
     required this.updatedAt,
     required this.owner,
+    this.homepage,
+    this.size,
   });
 
   factory RepoModel.fromJson(Map<String, dynamic> json) {
@@ -44,6 +49,8 @@ class RepoModel {
       forksCount: json['forks_count'] ?? 0,
       openIssuesCount: json['open_issues_count'] ?? 0,
       defaultBranch: json['default_branch'] ?? '',
+      homepage: json['homepage'],
+      size: json['size'],
       createdAt:
           DateTime.tryParse(json['created_at'] ?? '') ??
           DateTime(1970),

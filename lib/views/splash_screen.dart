@@ -1,10 +1,11 @@
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:github_restapi/resources/assets/images/images.dart';
 import 'package:github_restapi/resources/utils/responsive.dart';
 import 'package:github_restapi/theme/app_colors.dart';
 import 'package:github_restapi/theme/app_text_style.dart';
+import 'package:github_restapi/views/auth/login_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,10 +16,32 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(
-    vsync: this,
-    duration: Duration(seconds: 5),
-  )..repeat();
+  late final AnimationController _c;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _c = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat();
+
+    _navigateToHome();
+  }
+
+  _navigateToHome() async {
+    await Future.delayed(const Duration(seconds: 3));
+    if (mounted) {
+      Get.off(() => const LoginView());
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

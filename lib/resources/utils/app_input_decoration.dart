@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:github_restapi/theme/app_colors.dart';
-
-
 
 class AppInputDecorations {
   static InputDecoration rounded({
+    required BuildContext context,
     String? hintText,
     Widget? suffixIcon,
   }) {
+    final theme = Theme.of(context);
     const radius = 28.0;
-    const borderColor = Color(0xFFE2E8F0);
 
     return InputDecoration(
       hintText: hintText,
       filled: true,
-      fillColor: Colors.white,
+      fillColor: theme.colorScheme.surface,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 20,
@@ -22,28 +20,31 @@ class AppInputDecorations {
       alignLabelWithHint: false,
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radius),
-        borderSide: const BorderSide(
-          color: borderColor,
+        borderSide: BorderSide(
+          color: theme.colorScheme.outline.withAlpha(1),
           width: 1.2,
         ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radius),
-        borderSide: const BorderSide(
-          color: AppColors.primary,
+        borderSide: BorderSide(
+          color: theme.colorScheme.primary,
           width: 1.5,
         ),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radius),
-        borderSide: const BorderSide(color: Colors.red),
+        borderSide: BorderSide(
+          color: theme.colorScheme.error,
+        ),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(radius),
-        borderSide: const BorderSide(color: Colors.red),
+        borderSide: BorderSide(
+          color: theme.colorScheme.error,
+        ),
       ),
       suffixIcon: suffixIcon,
-      
     );
   }
 }

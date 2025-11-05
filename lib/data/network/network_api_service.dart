@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -10,17 +11,33 @@ class NetworkApiService {
     try {
       final res = await dio
           .get(url)
-          .timeout(Duration(seconds: 10));
+          .timeout(Duration(seconds: 15));
 
       return returnResponse(res);
-    } on SocketException {
-      throw InternetException();
+    } on TimeoutException {
+      throw RequestTimeOut();
     } on DioException catch (e) {
-      if (e.type == DioExceptionType.connectionTimeout) {
-        throw RequestTimeOut();
-      } else {
-        throw ServerExceptions();
+      if (e.type == DioExceptionType.connectionError ||
+          e.error is SocketException) {
+        throw InternetException();
       }
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        throw RequestTimeOut();
+      }
+      final code = e.response?.statusCode;
+      if (code == 404) {
+        throw UserNotFoundException('User not found');
+      }
+      if (code == 403) {
+        throw ServerExceptions(
+          'Rate limit exceeded. Try later.',
+        );
+      }
+      throw ServerExceptions(
+        e.message ?? 'Unexpected error',
+      );
     }
   }
 
@@ -28,7 +45,7 @@ class NetworkApiService {
     try {
       final res = await dio
           .post(url, data: data)
-          .timeout(Duration(seconds: 10));
+          .timeout(Duration(seconds: 15));
 
       return returnResponse(res);
     } on SocketException {

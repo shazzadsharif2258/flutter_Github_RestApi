@@ -22,6 +22,13 @@ class _LoginViewState extends State<LoginView> {
 
   final _formkey = GlobalKey<FormState>();
   @override
+  void dispose() {
+    userName.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Responsive.init(context);
     final horizontalPadding = Responsive.isTablet
@@ -75,29 +82,35 @@ class _LoginViewState extends State<LoginView> {
                 LabeledField(
                   controller: userName,
                   hint: 'username',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
+                  validator: (v) {
+                    final value = (v ?? '').trim();
+                    if (value.isEmpty) {
                       return 'Enter username';
+                    }
+                    if (value.contains(' ')) {
+                      return 'No spaces in username';
                     }
                     return null;
                   },
                 ),
                 SizedBox(height: Responsive.h(3)),
-                CustomButton(
-                  loading: false,
-                  title: 'Serach',
-                  height: 56,
-                  width: double.infinity,
-                  textColor: Colors.white,
-                  filled: true,
-                  onPress: () {
-                    if (!_formkey.currentState!
-                        .validate()) {
-                      return;
-                    }
-                    auth.getUser(userName.text.trim());
-                    print(userName.text.trim());
-                  },
+                Obx(
+                  () => CustomButton(
+                    loading: auth.loading.value,
+                    title: 'Serach',
+                    height: 56,
+                    width: double.infinity,
+                    textColor: Colors.white,
+                    filled: true,
+                    onPress: () {
+                      final username = userName.text.trim();
+                      if (!_formkey.currentState!
+                          .validate()) {
+                        return;
+                      }
+                      auth.getUser(username.toLowerCase());
+                    },
+                  ),
                 ),
               ],
             ),

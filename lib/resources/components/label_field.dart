@@ -41,6 +41,7 @@ class LabeledField extends StatelessWidget {
           textAlign: TextAlign.start,
           textAlignVertical: TextAlignVertical.center,
           decoration: AppInputDecorations.rounded(
+            context: context,
             hintText: hint,
             suffixIcon: suffix,
           ),
